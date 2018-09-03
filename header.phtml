@@ -1,0 +1,61 @@
+﻿<?
+$id_bask=$_COOKIE["id_bask"];
+if(!isset($id_bask))
+{
+	$uniq_ID=uniqid("ID");
+	setcookie("id_bask", $uniq_ID, time()+60*60*24*14);
+}
+
+?>
+	
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<head>
+		<meta charset="utf-8">
+		<title> ВМИИТ ОПТИКА </title>
+</head>
+ 
+ <body background="8070.jpg">
+<table border="0" align="right" width="90%" cellpadding="0" cellpadding="0">
+<tr><td>
+
+<table border="0" align="right" width="100%">
+<tr>
+<td align="center" bgcolor="#DDA0DD">
+<form action="auto.phtml" method="post">
+<table>
+<tr><td align="right"><font size=-2>Логин:</font></td>
+<td align="left"><input type=text style="width:60; height^20;"
+name=login></td></tr>
+<tr><td align="right"><font size=-2>Пароль:</font></td>
+<td align="left"><input type=password style="width:60;height:20;" name=password>
+<input type=submit value=ok style="height:20;"></td></tr>
+</table>
+
+</td>
+</form>
+<td colspan="4" align="center" bgcolor="#B0E0E6">
+<font face="New Times Roman" size="+3"><b> ВМИИТ Оптика</b></font></td></tr>
+<tr><td align="center" bgcolor="#FFC0CB" width="20%">
+<a href="catalog.phtml"><b>Каталог</b></a></td>
+<tr><td align="center" bgcolor="#FFC0CB" width="20%">
+<a href="basket.phtml"><b>Корзина</b></a></td>
+<tr><td align="center" bgcolor="#FFC0CB" width="20%">
+<a href="reg.phtml"><b>Регистрация</b></a></td>
+<tr><td align="center" bgcolor="#FFC0CB" width="20%">
+<a href="order.phtml"><b>Заказ</b></a></td>
+<tr><td align="center" bgcolor="#FFC0CB" width="20%">
+<a href="exit.phtml"><b>Выход</b></a></td>
+</tr>
+</table>
+<? 
+if (isset($_SESSION["login"]))
+{
+	echo $_SESSION["login"];
+	echo "<br><a href='cabinet.phtml'>Личный кабинет </a>";
+}
+?>
+</td></tr>
+<td><tr align="center" bgcolor=<?print $color?>><font face="Times New Roman" size="+2"></font><br>
+
+</td></tr>

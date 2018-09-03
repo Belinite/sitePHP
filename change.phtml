@@ -1,0 +1,25 @@
+<?
+$surname = $_POST["surname"];
+$name = $_POST["name"];
+$address = $_POST["address"];
+$mail = $_POST["mail"];
+$id=$_SESSION["id"];
+$title="Регистрация";
+$color="#aaaaff";
+include("connect.phtml");
+if ($surname!="" && $name!="" && $address!="" && $mail!="")
+{
+	$strSQL1="UPDATE customers SET surname='".$surname."',name='".$name."',address='".$address."',mail ='".$mail."'
+	WHERE id_cust=".$id;
+	$result1=mysql_query($strSQL1) or die ("НЕ могу выполнить запрос");
+$_SESSION["log"]=$surname." ".$name;
+$message="<tr><td bgcolor='#66cc66' align='center'>
+	Изменения данных сохранены </td></tr>";
+}
+else
+	$message="<tr><td bgcolor='#66cc66'align='center'>
+	Не все поля заполнены </td></tr>";
+include ("header.phtml");
+echo $message;
+include ("footer.phtml");
+?>

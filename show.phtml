@@ -1,0 +1,58 @@
+<?header("Cache-control: no-cache");
+header ("Content-Type: text/html; charset=utf-8");?>
+<?
+$id_man=$_GET["id_man"];
+$id_cat=$_GET["id_cat"];
+$type=$_GET["type"];
+include("connect.phtml");
+if ($type==1)
+{
+	$strSQL1="SELECT name_man FROM manufacturer WHERE id_man=".$id_man;
+	$result=mysql_query($strSQL1) or die ("Не могу выполнить запрос!");
+	if ($row=mysql_fetch_array($result))
+		$title=$row["name_man"];
+	$strSQL1="SELECT id_product,name_product, product.id_cat,name_cat,product.id_man,name_man,style,shape,image,price FROM product,manufacturer,categories WHERE product.id_cat=categories.id_cat AND product.id_man=manufacturer.id_man AND product.id_man=".$id_man;
+}
+if ($type==2)
+{
+	$strSQL1="SELECT name_cat FROM categories WHERE id_cat=".$id_cat;
+	$result=mysql_query($strSQL1) or die ("Не могу выполнить запрос!");
+	if ($row=mysql_fetch_array($result))
+		$title=$row["name_cat"];
+	$strSQL1="SELECT id_product,name_product, product.id_cat,name_cat,product.id_man,name_man,style,shape,image,price FROM product,manufacturer,categories WHERE product.id_cat=categories.id_cat AND product.id_man=manufacturer.id_man AND product.id_cat=".$id_cat;
+}
+$result1=mysql_query($strSQL1) or die ("Не могу выполнить запрос 2");
+include ("header.phtml");
+?>
+<tr><td>
+<table border="1" width ="100%" align="right">
+<?
+while($row=mysql_fetch_array($result1))
+{?>
+<tr>
+<td align="center"><img src="images/<?print $row["image"];?>"
+alt="<?print $row["name_product"];?>" border="0" width="30%">
+<center><a href="dobasket.phtml?type=1&id_product=<?print $row["id_product"];?>">
+<font size=-1>положить в корзину</font></a></center></td>
+<td>
+<table>
+<tr><td align="right"><i>Продукт:</i></td>
+<td><?print $row ["name_product"];?></td></tr>
+<tr><td align="right"><i>Производитель:</i></td>
+<td><a href="show.phtml?type=1&id_man=<?print $row ["id_man"];?>"><?print $row ["name_man"];?></a>
+</td></tr>
+<tr><td align="right"><i>Цена:</i></td>
+<td><?print $row["price"];?></td></tr>
+<tr><td align="right"><i>Категория: </i></td>
+<td><a href="show.phtml?type=2&id_cat=<?print $row["id_cat"];?>"><?print $row ["name_cat"];?></a>
+</td></tr>
+</table>
+</td>
+</tr>
+<?}?>
+</table>
+</td></tr>
+<?
+include ("footer.phtml");
+?>
+	

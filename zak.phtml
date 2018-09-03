@@ -1,0 +1,27 @@
+<?//header ("Content-type: text/xml; charset=utf-8")?>
+<?header ("Content-type: text/phtml; charset=utf-8")?>
+<?
+print "<?xml version=\"1.0\" encoding =\"UTF-8\"?>";
+include ("connect.phtml");
+$strSQL1 = "SELECT * FROM order_optics ORDER BY id_order";
+$result1 = mysql_query($strSQL1) or die ("Не могу выполнить запрос1");
+print "<список заказов>";
+while($row = mysql_fetch_array($result1))
+{
+	print "<Покупатель код ='".$row["id_order"]."'>";
+	$strSQL2 = "SELECT * from product,order_optics WHERE order_optics.id_product=product.id_product AND order_optics.id_order=".$row["id_order"];//"SELECT name_man, name_product,price,quantity FROM product,manufacturer,order_optics WHERE product.id_product=order_optics.id_product AND order_optics.id_order=".$row["id_order"];
+	print $strSQL2;
+	//AND order_optics.id_order=".$row["id_order"];
+	$result2=mysql_query($strSQL2); print $result2; //or die("Не могу выполнить запрос2");
+	while($row2=mysql_fetch_array($result2))
+	{
+		//print "<товар Производитель='".$row2["name_man"]."' Название ='".$row2["name_product"]."'>";
+		//print "<цена>".$row2["price"]."</цена>";
+		//print "<количество>".$row2["quantity"]."</количество>";
+		//print "</товар>";
+	}
+	print "</Покупатель>";
+}
+print "</список заказов>";
+mysql_close();
+?>

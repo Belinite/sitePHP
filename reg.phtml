@@ -1,0 +1,78 @@
+<?header ("Content-Type: text/html; charset=utf-8");?>
+<? 
+$title = "Регистрация";
+$color = "#ddaaff";
+$surname = $_POST["surname"];
+$name = $_POST["name"];
+$address = $_POST["address"];
+$mail = $_POST["mail"];
+$password = $_POST["password"];
+$password2 = $_POST["password2"];
+$login = $_POST["login"];
+$type = $_POST["type"];
+include("connect.phtml");
+if($type==1)
+{
+	if($surname!="" && $name!="" && $address!="" &&mail!="" && $login!="" && $password!="" && $password2!="")
+	{
+		if ($password!=$password2)
+		{
+			$message = "<tr><td bgcolor = '#ff9999' align='center'><b>
+			Пароли не совпадают! </b></td></tr>";
+		}
+		else
+		{
+			$strSQL1="SELECT id_cust FROM customers WHERE login = '".$login."'";
+			$result1 = mysql_query($strSQL1) or die ("Не могу выполнить запрос1!");
+			if ($row = mysql_fetch_array($result1))
+			{
+				$message="<tr><td bgcolor='#ff9999' align='center'>
+				<b>Такой логин уже существует</b></td></tr>";
+			}
+			else
+			{
+				$strSQL1="INSERT INTO customers (last_name,first_name,address,mail,login,password) VALUES ('".$surname."', '".$name."','".$address."','".$mail."','".$login."','".$password."')";
+				$result1=mysql_query($strSQL1) or die ("Не могу выполнить запрос!");
+				$message="<tr><td bgcolor='#66cc66' align='center'>
+				<b> Вы успешно зарегистрированы </b></td></tr>";
+				$success = true;
+			}
+		}
+	}
+	else  
+		$message="<tr><td bgcolor='#ff9999' align='center'>
+	<b> Не все поля заполнены </b></td></tr>";
+}
+include("header.phtml");
+echo $message;
+if (!$success)
+{
+	?>
+	<form action =reg.phtml method = post>
+	<tr><td align="center">
+
+	<table border="0" width="100%" align="right">
+	<tr><td align="right" width="50%"><b>Фамилия</b></td><td>
+	<input type = text name = surname value= "<?echo $surname?>"></td></tr>
+	<tr><td align="right" width="50%"><b>Имя</b></td><td>
+	<input type = text name = name value= "<?echo $name?>"></td></tr>
+	<tr><td align="right" width="50%"><b>Адрес</b></td><td>
+	<input type = text name = address value= "<?echo $address?>"></td></tr>
+	<tr><td align="right" width="50%"><b>E-mail</b></td><td>
+	<input type = text name = mail value= "<?echo $mail?>"></td></tr>
+	<tr><td align="right" width="50%"><b>Логин</b></td><td>
+	<input type = text name = login value= "<?echo $login?>"></td></tr>
+	<tr><td align="right"><b>Пароль</b></td><td><input type = password name = password value=""></td></tr>
+	<tr><td align="right"><b>Повторите пароль</b></td><td><input type = password name = password2 value=""></td></tr>
+	<tr><td></td>
+	<input type = hidden value=1 name=type>
+	<tr><td align="right"></td><td>
+	<input type = submit value = "отправить"></td></tr>
+	</table>
+	</form>
+	</td></tr>
+	<?
+	mysql_close();
+}
+include("footer.phtml");
+?>

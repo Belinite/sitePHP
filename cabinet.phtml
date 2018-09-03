@@ -1,0 +1,86 @@
+<? 
+$title  = "Личный кабинет";
+$color = "#aaaaff";
+$login = $_SESSION["login"];
+$id = $_SESSION["id"];
+if (!isset($login))
+{
+	$success = false;
+	$message = "<tr><td bgcolor='#ff9999' align='center'>
+	<b>Вы не авторизованы !!</b></td></tr>";
+}
+else 
+	$success=true;
+include ("header.phtml");
+echo $message;
+if ($success)
+{
+	include ("connect.phtml");
+	$strSQL="SELECT * FROM customers WHERE id_cust='".$id."'";
+	$result=mysql_query($strSQL) or die ("Не могу выполнить запрос!");
+	if ($row=mysql_fetch_array($result))
+	{
+		?>
+		<form action = change.phtml method = post>
+		<tr><td>
+		<h2>Ваши личные данные </h2>
+		<table border = "0" width="100%" align = "right">
+		<tr><td align = "right"><i> Фамилия </i></td><td>
+		<input type = text name = surname value = "<?print $row ["last_name"]?>"></td>
+		<td align = "right"><i> Имя </i></td><td>
+		<input type = text name = name value = "<?print $row ["first_name"]?>"></td>
+		</tr>
+		<tr><td align = "right"><i> Адрес </i></td><td>
+		<input type = text name = address value = "<?print $row ["address"]?>"></td>
+		<td align = "right"><i> E-mail </i></td><td>
+		<input type = text name = mail value = "<?print $row ["mail"]?>"></td>
+		</tr>
+		<tr><td align = "center" colspan = "4">
+		<input type = "submit" value ="сохранить изменения"></td></tr>
+		</table>
+		</form>
+		</td></tr>
+		<tr><td>
+		<h2>Ваши заказы</h2>
+		<? 
+		$strSQL1 = "SELECT id_order, date_ord FROM orders WHERE id_cust='".$id."' ORDER BY date_ord";
+		$result1=mysql_query($strSQL1) or die ("Не могу выполнить запрос 1");
+		while ($row1=mysql_fetch_array($result1))
+		{
+			$order=$row1["id_order"];
+			$strSQL2="SELECT name_man, name_product, price,quantity,id_order, product.id_product FROM product,manufacturer,order_optics WHERE product.id_product=order_optics.id_product and manufacturer.id_man=product.id_man and id_order='".$order."'";
+			$result2=mysql_query($strSQL2) or die ("Не могу выполнить запрос 2");
+		?>
+		<tr><td>
+		<hr>
+		Заказ №<?=$order?> от <?=$row1["date_ord"]?><br>
+		<table border="1" width="100%" align="right">
+		<tr><td align="right" width="20%">Производитель</td>
+		<tr><td align="right" width="20%">Название</td>
+		<tr><td align="right" width="20%">Цена</td>
+		<tr><td align="right" width="20%">Количество</td>
+		<?
+		$sum=0;
+		while ($row2=mysql_fetch_array($result2))
+		{
+		?>
+		<tr>
+		<td><?echo $row2["name_man"];?></td>
+		<td><?echo $row2["name_product"];?></td>
+		<td><?echo $row2["price"];?></td>
+		<td><?echo $row2["quantity"];?></td>
+		</tr>
+		<?}
+		?>
+		<?$sum=$sum+$row2["price"]*$row2["quantity"];?>
+		<tr><td></td><td align = "right"><i> Итого</i></td>
+		<td><?echo $sum;?></td><td></td></tr>
+		</table>
+		</td></tr>
+	<?
+		}
+	}
+	mysql_close();
+}
+include ("footer.phtml");
+?>

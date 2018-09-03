@@ -1,0 +1,52 @@
+<?header ("Content-Type: text/html; charset=utf-8");?>
+<?
+$title = "Авторизация";
+$color = "#ddaaff";
+$password = $_POST["password"];
+$login = $_POST["login"];
+include("connect.phtml");
+if (get_magic_quotes_gpc()==1)
+{
+	$password=stripslashes(trim($_POST["password"]));
+	$login=stripslashes(trim($_POST["login"]));
+}
+else
+{
+$password=trim($_POST["password"]);
+$login=trim($_POST["login"]);
+}
+$password=mysql_real_escape_string($password);
+$login=mysql_real_escape_string($login);
+
+$strSQL="SELECT first_name,last_name,address,mail,id_cust FROM customers WHERE login='".$login."' AND password='".$password."'";
+$result = mysql_query($strSQL) or die ("Не могу выполнить запрос1");
+if ($row = mysql_fetch_array($result))
+{
+	//$start = session_start();
+	//session_register("login");
+	$_SESSION["login"]=$row["last_name"]." ".$row["first_name"];
+	//session_register("id");
+	$_SESSION["id"]=$row["id_cust"];
+	$message = "<tr><td bgcolor ='#66cc66' align='center'>
+	<b> Авторизация прошла успешно </b></td></tr>";
+	$success = true;
+}
+else 
+{
+	$message = "<tr><td bgcolor='#66cc66' align='center'>
+	<b>Таких логина/пароля не существует</b><td></tr>";
+}
+
+mysql_close();
+if($success)
+{	
+	include("cabinet.phtml");
+}
+else
+{
+	include("header.phtml");
+	echo $message;
+	include("footer.phtml");
+}
+?>
+	

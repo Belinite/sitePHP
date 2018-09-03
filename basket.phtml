@@ -1,0 +1,61 @@
+<?header ("Content-Type: text/html; charset=utf-8");?>
+<?
+$id_bask = $_COOKIE["id_bask"];
+$title="Ваша корзина";
+$color = "#ddaaff";
+include("header.phtml");
+include("connect.phtml");
+$strSQL1="SELECT COUNT(*) as count FROM basket WHERE id_bask='".$id_bask."'";
+$result1=mysql_query($strSQL1) or die ("Не могу выполнить запрос1!");
+$row=mysql_fetch_array($result1);
+if ($row["count"]==0)
+{
+?>
+	<tr><td bgcolor = '#ff9999' align='center'>
+	<b> Ваша корзина пуста!</b></td></tr>
+<?
+}
+else
+{
+	$strSQL1="SELECT image,manufacturer.id_man,product.id_man, name_man,name_product,price,quantity,id_bask,product.id_product FROM product,basket,manufacturer WHERE product.id_product=basket.id_product AND id_bask='".$id_bask."' AND product.id_man= manufacturer.id_man";
+	$result1=mysql_query($strSQL1) or die("Не могу выполнить запрос 2!");
+	?>
+	<tr><td>
+	<table border ="1" width="100%" align="right">
+	<tr><td align="right"><i>Производитель: </i></td>
+	<td align = "right"><i> Название:</i></td>
+	<td align = "right"><i> Цена:</i></td>
+	<td align = "right"><i> Количество:</i></td>
+	<td></td></tr>
+	<?
+	$sum=0;
+	while($row=mysql_fetch_array($result1))
+	{
+	?>
+		<tr>
+		<td><?print $row["name_man"];?></td>
+		<td><b><?print $row["name_product"];?></b></td>
+		<td><?print $row["price"];?></td>
+		<td><?print $row["quantity"];?>
+		<a href ="dobasket.phtml?type=1&id_product=<?print $row["id_product"];?>" title="Увеличить">[+]</a>
+		<a href ="dobasket.phtml?type=2&id_product=<?print $row["id_product"];?>" title="Уменьшить">[-]</a>
+		</td>
+		<td> <a href ="dobasket.phtml?type=3&id_product=<?print $row["id_product"];?>"> Удалить </a></td>
+		</tr>
+		<?
+		$sum =$sum +$row["price"]*$row["quantity"];
+	}	?>
+	<tr><td align="right"></td><td align="right"><i>Итого:</i></td>
+	<td align="right"><?echo $sum;?></td><td align="right"></td></tr>
+	</table>
+	<tr><td><center><a href = dobasket.phtml?type=4>
+	<b> Очистить корзину </b></a></center></td></tr>
+	<tr><td><center><a href="order.phtml">
+	<b> Оформить заказ </b></a></center></td></tr>
+	<?
+}
+include("footer.phtml");
+?>
+	
+		
+		

@@ -1,0 +1,56 @@
+<?
+$id_bask=$_COOKIE ["id_bask"];
+$title = "Ваш заказ";
+$color="#66cc66";
+include ("header.phtml");
+include("connect.phtml");
+$strSQL1="SELECT COUNT(*) as quantity FROM basket WHERE id_bask='".$id_bask."'";
+$result1=mysql_query($strSQL1) or die ("НЕ могу выполнить запрос1");
+$row=mysql_fetch_array($result1);
+if($row["quantity"]==0)
+{
+	?>
+	<tr><td bgcolor='#ff9999' align = 'center'>
+	<b> Ваша корзина пуста</b></td></tr>
+	<?
+}
+else 
+{
+	$strSQL1="SELECT image,name_man,name_product,price,quantity, id_bask,
+	product.id_product FROM product,basket,manufacturer WHERE product.id_product=basket.id_product
+	AND manufacturer.id_man=product.id_man AND id_bask='".$id_bask."'";
+	echo $strSQL1;
+	$result1=mysql_query($strSQL1) or die ("Не могу выполнить запрос2");
+	?>
+	<tr><td>
+	<table border="1" width="100%" align="right">
+	<tr> <td align="right">Производитель</td>
+	<td align="right">Товар</td>
+	<td align="right">Цена</td>
+	<td align="right">Количество</td></tr>
+	<?
+	$sum=0;
+	while ($row=mysql_fetch_array($result1))
+	{
+		?>
+		<tr>
+		<td><?echo $row["manufacturer"];?></td>
+		<td><?echo $row["name_product"];?></td>
+		<td><?echo $row["price"];?></td>
+		<td><?echo $row["quantity"];?></td>
+		</tr>
+		<?
+		$sum=$sum+$row["price"]*$row["quantity"];
+	}
+	?>
+	<tr><td></td><td align = "right">Итого</td>
+	<td><?echo $sum;?></td><td></td></tr>
+	</table>
+	Ваш заказ можно получить в нашей оптике
+	</td><tr>
+	<tr><td><center><a href =doorder.phtml>
+	Отправить заказ </a></center></td></tr>
+	<?
+}
+include ("footer.phtml");
+?>
